@@ -1,0 +1,20 @@
+.photo-grid-box {
+  position: relative;
+  width: 90%;
+  margin: 10px auto;
+  .photo-block {
+    display: inline-block;
+    position: absolute;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50%;
+    &--clickable {
+      cursor: pointer;
+    }
+    &__panel{
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
