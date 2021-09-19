@@ -1,0 +1,46 @@
+{
+  "name": "photo-grid-box-vanilla",
+  "version": "1.0.0",
+  "description": "A flickr-like photo array showcase module.",
+  "main": "./src/dist/photo-grid-box.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config ./webpack.config.js --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tabsteveyang/photo-grid-box-vanilla.git"
+  },
+  "keywords": [
+    "flickr",
+    "photo",
+    "image",
+    "grid",
+    "box",
+    "RWD",
+    "ES5"
+  ],
+  "author": "Steven T <tabsteveyang@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/tabsteveyang/photo-grid-box-vanilla/issues"
+  },
+  "homepage": "https://github.com/tabsteveyang/photo-grid-box-vanilla#readme",
+  "devDependencies": {
+    "@babel/core": "^7.15.5",
+    "autoprefixer": "^10.3.4",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^6.2.0",
+    "mini-css-extract-plugin": "^2.3.0",
+    "postcss-loader": "^6.1.1",
+    "sass": "^1.39.2",
+    "sass-loader": "^12.1.0",
+    "style-loader": "^3.2.1",
+    "webpack": "^5.52.1",
+    "webpack-cli": "^4.8.0"
+  },
+  "browserslist": [
+    "last 2 version",
+    "IE 10"
+  ]
+}
