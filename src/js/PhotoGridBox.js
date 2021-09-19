@@ -1,18 +1,19 @@
 /*
  * PhotoGridBox class
  */
-function PhotoGridBox (insertPoint, imgs, imgOnClick, rowHeight, rowGap, colGap) {
+function PhotoGridBox (insertPoint, imgs, imgOnClick, rowGap, colGap) {
   this.insertPoint = insertPoint
   this.imgLoader = new Image()
   this.dom = null
   this.imgs = []
-  this.rowHeight = rowHeight ? rowHeight : this._getRowHeight()
-  this.rowGap = rowGap ? rowGap : 5
-  this.colGap = colGap ? colGap : 5
+  this.rowHeight = this._getRowHeight()
+  this.rowGap = rowGap ? rowGap : 3
+  this.colGap = colGap ? colGap : 3
   this.rowLength = 0
   this.showUnCompeleteRow = false
   this.compeleteIndex = -1  
   this.lastRenderedWindowOffsetWidth = window.innerWidth
+  this.minImgWidth = this._getMinImgWidth()
  
   this._initDOM()
   if (imgOnClick) {
@@ -34,8 +35,22 @@ PhotoGridBox.prototype._initDOM = function () {
   }
 }
 PhotoGridBox.prototype._getRowHeight = function () {
-  if (window.innerWidth < 550) {
-    return 220
+  if (window.innerWidth <= 350) {
+    return 200
+  } else if (window.innerWidth <= 550) {
+    return 250
+  } else if (window.innerWidth <= 768) {
+    return 270
+  }
+  return 280
+}
+PhotoGridBox.prototype._getMinImgWidth = function () {
+  if (window.innerWidth <= 350) {
+    return 130
+  } else if (window.innerWidth <= 550) {
+    return 150
+  } else if (window.innerWidth <= 768) {
+    return 180
   }
   return 200
 }
@@ -64,8 +79,9 @@ PhotoGridBox.prototype._render = function () {
     var imgWidth = calcWidthByRowHeight(this.width, this.height)
     var imgAndGapWidth = imgWidth + self.colGap
     var element = createBlockElement(this.src, imgWidth, self.rowHeight, self.rowLength)
+    var buffer = self.minImgWidth
     addElementToTempRow(element, imgAndGapWidth)
-    if (tempAccumulateWidth >= self.dom.offsetWidth) {
+    if (tempAccumulateWidth + buffer >= self.dom.offsetWidth) {
       adjustImagesInTheRow()
       handleCompleteRow()
     }
@@ -94,7 +110,12 @@ PhotoGridBox.prototype._render = function () {
   }
   function calcWidthByRowHeight(width, height) {
     var ratio = self.rowHeight / height
-    return Math.round(width * ratio)
+    var result = Math.round(width * ratio)
+    var buffer = 100
+    if (result < self.minImgWidth + buffer) {
+      result = self.minImgWidth
+    }
+    return result
   }
   function createBlockElement(imgSrc, imgWidth, imgHeight, rowIndex) {
     var element = document.createElement('div')
@@ -123,14 +144,29 @@ PhotoGridBox.prototype._render = function () {
   }
   function adjustImagesInTheRow() {
     var pad = self.dom.offsetWidth - (tempAccumulateWidth - self.colGap)
-    var padPerBlock = pad / tempRow.length
-    for(var i = 0; i < tempRow.length; i++) {
-      var element = tempRow[i]
-      var adjustWidth = parseFloat(element.style.width.replace('px', '')) + padPerBlock
-      element.style.width = adjustWidth + 'px'
-      if (i > 0) {
-        element.style.left = parseFloat(element.style.left.replace('px', '')) + padPerBlock * i + 'px'
+    var adjustElementsIndex = []
+    for (var i = 0; i < tempRow.length; i++) {
+      if (pad > 0) {
+        adjustElementsIndex.push(i)
+      } else {
+        var element = tempRow[i]
+        var elementWidth = parseFloat(element.style.width.replace('px', ''))
+        if (elementWidth > self.minImgWidth) {
+          adjustElementsIndex.push(i)
+        }
       }
+    }
+    var padPerBlock = pad / adjustElementsIndex.length
+    var accumulateWidth = 0
+    for (var i = 0; i < tempRow.length; i++) {
+      var element = tempRow[i]
+      var width = parseFloat(element.style.width.replace('px', ''))
+      if (adjustElementsIndex.includes(i)) {
+        width += padPerBlock
+        element.style.width = width + 'px'
+      }
+      element.style.left = accumulateWidth + 'px'
+      accumulateWidth += width + self.colGap
     }
   }
   function handleCompleteRow() {
@@ -172,8 +208,9 @@ PhotoGridBox.prototype.setShowUnCompleteRow = function (value) {
   if (typeof value === 'boolean') this.showUnCompeleteRow = value
 }
 PhotoGridBox.prototype._resize = function (self) {
-  console.log('resize')
   this.rowLength = 0
+  this.rowHeight = this._getRowHeight()
+  this.minImgWidth = this._getMinImgWidth()
   this.compeleteIndex = -1
   self.dom.style.width = null
   this._render()
@@ -207,3 +244,5 @@ PhotoGridBox.prototype.destroy = function () {
   this.dom = null
   this.imgs = []
 }
+
+export default PhotoGridBox
