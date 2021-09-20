@@ -17,7 +17,7 @@ function PhotoGridBox (insertPoint, imgs, imgOnClick, rowGap, colGap) {
  
   this._initDOM()
   if (imgOnClick) {
-     this.setImgOnClick(imgOnClick)  
+     this.imgOnClick = imgOnClick
   }
   if (imgs) {
     this.appendImgs(imgs)
@@ -78,7 +78,7 @@ PhotoGridBox.prototype._render = function () {
   imgLoader.onload = function () {
     var imgWidth = calcWidthByRowHeight(this.width, this.height)
     var imgAndGapWidth = imgWidth + self.colGap
-    var element = createBlockElement(this.src, imgWidth, self.rowHeight, self.rowLength)
+    var element = createBlockElement(this.src, imgs[imgIndex], imgWidth, self.rowHeight, self.rowLength)
     var buffer = self.minImgWidth
     addElementToTempRow(element, imgAndGapWidth)
     if (tempAccumulateWidth + buffer >= self.dom.offsetWidth) {
@@ -101,6 +101,13 @@ PhotoGridBox.prototype._render = function () {
       return
     }
     var imgSrc = self.imgs[imgIndex]
+    if (imgSrc && typeof imgSrc === 'object') {
+      if (imgSrc.src) {
+        imgSrc = imgSrc.src
+      } else {
+        console.error('Invalid format: elements in imgs should be a string or an object with src attribute. Picture in index: ' + imgIndex + ' will not be shown.')
+      }
+    }
     imgLoader.src = imgSrc
   }
   function removeIfImgBlockExist(imgIndex) {
@@ -117,7 +124,7 @@ PhotoGridBox.prototype._render = function () {
     }
     return result
   }
-  function createBlockElement(imgSrc, imgWidth, imgHeight, rowIndex) {
+  function createBlockElement(imgSrc, imgConfig, imgWidth, imgHeight, rowIndex) {
     var element = document.createElement('div')
     var rowGap = self.rowGap * rowIndex
     var top = self.rowHeight * rowIndex + rowGap
@@ -129,7 +136,9 @@ PhotoGridBox.prototype._render = function () {
     element.style.top = top + 'px'
     element.style.left = left + 'px'
     if (self.imgOnClick) {
-      element.onclick = self.imgOnClick
+      element.onclick = function (e) {
+        self.imgOnClick(e, imgConfig)
+      }
       element.className += ' photo-block--clickable'
     }
     element.innerHTML = createBlockElementChildren()
@@ -200,9 +209,10 @@ PhotoGridBox.prototype._render = function () {
   }
 }
 PhotoGridBox.prototype.setImgOnClick = function (imgOnClick) {
-  this.imgOnClick = function(e) {
-    if (imgOnClick) imgOnClick(e)
+  if (imgOnClick) {
+    this.imgOnClick = imgOnClick
   }
+  this._resize(this)
 }
 PhotoGridBox.prototype.setShowUnCompleteRow = function (value) {
   if (typeof value === 'boolean') this.showUnCompeleteRow = value
