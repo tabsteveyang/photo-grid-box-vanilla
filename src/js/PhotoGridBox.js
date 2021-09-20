@@ -1,7 +1,7 @@
 /*
  * PhotoGridBox class
  */
-function PhotoGridBox (insertPoint, imgs, imgOnClick, rowGap, colGap) {
+function PhotoGridBox (insertPoint, imgs, imgOnClick, panelHTMLSetter, rowGap, colGap) {
   this.insertPoint = insertPoint
   this.imgLoader = new Image()
   this.dom = null
@@ -18,6 +18,9 @@ function PhotoGridBox (insertPoint, imgs, imgOnClick, rowGap, colGap) {
   this._initDOM()
   if (imgOnClick) {
      this.imgOnClick = imgOnClick
+  }
+  if (panelHTMLSetter) {
+    this.panelHTMLSetter = panelHTMLSetter
   }
   if (imgs) {
     this.appendImgs(imgs)
@@ -141,11 +144,16 @@ PhotoGridBox.prototype._render = function () {
       }
       element.className += ' photo-block--clickable'
     }
-    element.innerHTML = createBlockElementChildren()
+    element.innerHTML = createBlockElementChildren(imgConfig)
     return element
   }
-  function createBlockElementChildren() {
-    return '<div class="photo-block__panel"></div>'
+  function createBlockElementChildren(imgConfig) {
+    var htmlString = '<div class="photo-block__panel">'
+    if (self.panelHTMLSetter) {
+      htmlString += self.panelHTMLSetter(imgConfig) 
+    }
+    htmlString += '</div>'
+    return htmlString
   }
   function addElementToTempRow(element, imgAndGapWidth) {
     tempAccumulateWidth += imgAndGapWidth
@@ -210,14 +218,20 @@ PhotoGridBox.prototype._render = function () {
 }
 PhotoGridBox.prototype.setImgOnClick = function (imgOnClick) {
   if (imgOnClick) {
-    this.imgOnClick = imgOnClick
+    this.imgOnClick = imgOnClick    
   }
-  this._resize(this)
+  this._rerender(this)
+}
+PhotoGridBox.prototype.setPanelHTMLSetter = function (panelHTMLSetter) {
+  if (panelHTMLSetter) {
+    this.panelHTMLSetter = panelHTMLSetter    
+  }
+  this._rerender(this)
 }
 PhotoGridBox.prototype.setShowUnCompleteRow = function (value) {
   if (typeof value === 'boolean') this.showUnCompeleteRow = value
 }
-PhotoGridBox.prototype._resize = function (self) {
+PhotoGridBox.prototype._rerender = function (self) {
   this.rowLength = 0
   this.rowHeight = this._getRowHeight()
   this.minImgWidth = this._getMinImgWidth()
@@ -234,7 +248,7 @@ PhotoGridBox.prototype._addWindowResizeEvent = function () {
     clearTimeout(timeout)
     timeout = setTimeout(function() {
       if (self.lastRenderedWindowOffsetWidth !== window.innerWidth) {
-        self._resize(self)
+        self._rerender(self)
         self.lastRenderedWindowOffsetWidth = window.innerWidth
       }      
     }, delay)
