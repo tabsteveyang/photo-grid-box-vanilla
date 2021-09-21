@@ -81,7 +81,7 @@ PhotoGridBox.prototype._render = function () {
   imgLoader.onload = function () {
     var imgWidth = calcWidthByRowHeight(this.width, this.height)
     var imgAndGapWidth = imgWidth + self.colGap
-    var element = createBlockElement(this.src, imgs[imgIndex], imgWidth, self.rowHeight, self.rowLength)
+    var element = createBlockElement(this.src, self.imgs[imgIndex], imgWidth, self.rowHeight, self.rowLength)
     var buffer = self.minImgWidth
     addElementToTempRow(element, imgAndGapWidth)
     if (tempAccumulateWidth + buffer >= self.dom.offsetWidth) {
