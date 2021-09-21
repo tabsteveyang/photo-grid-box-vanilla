@@ -5,11 +5,11 @@ module.exports = function (env, argv) {
 	const isProduction =  argv.mode === 'production';
 	return {
 		entry: {
-			'photo-grid-box': path.join(__dirname, "src", "index.js")
+			'photo-grid-box-vanilla': path.join(__dirname, "src", "index.js")
 		},
 		output: {
 			path: path.join(__dirname, "dist"),
-			filename: 'photo-grid-box.js',
+			filename: 'photo-grid-box-vanilla.min.js',
 			libraryTarget: 'umd'
 		},
 		module: {
@@ -33,7 +33,7 @@ module.exports = function (env, argv) {
 		plugins: [
 			// extract css file
 			new MiniCssExtractPlugin({
-				filename: 'css/[name].css'
+				filename: 'css/[name].min.css'
 			}),
 		],
 		mode: isProduction ? 'production' : 'development',
