@@ -1,6 +1,6 @@
 {
   "name": "photo-grid-box-vanilla",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Flickr-like photo array showcase module in vanilla JavaScript.",
   "main": "./dist/photo-grid-box-vanilla.min.js",
   "scripts": {
