@@ -34,19 +34,19 @@ const { PhotoGridBox } = require( "photo-grid-box-vanilla" );
 const imgs = [
   // use an object as an element allows you to to build some customized feature
   {
-    url: "https://c1.staticflickr.com/1/699/22812601591_12ca1ee7cf_n.jpg",
+    src: "https://c1.staticflickr.com/1/699/22812601591_12ca1ee7cf_n.jpg",
     payload: {  // you can carry more information in the payload
       title: 'mountain'
     }
   },
   {
-    url: "https://c1.staticflickr.com/1/573/22409354059_ba46782c8f_n.jpg",
+    src: "https://c1.staticflickr.com/1/573/22409354059_ba46782c8f_n.jpg",
     payload: {
       title: 'wall'
     }
   },
   {
-    url: "https://c1.staticflickr.com/6/5704/22410267477_303a090dcd_m.jpg",
+    src: "https://c1.staticflickr.com/6/5704/22410267477_303a090dcd_m.jpg",
     payload: {
       title: 'jet'
     }
